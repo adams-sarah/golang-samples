@@ -56,7 +56,7 @@ func query(proj string) (*bigquery.RowIterator, error) {
 // printResults prints results from a query to the Shakespeare dataset.
 func printResults(w io.Writer, iter *bigquery.RowIterator) error {
 	for {
-		var row bigquery.ValueList
+		var row []bigquery.Value
 		err := iter.Next(&row)
 		if err == iterator.Done {
 			return nil
@@ -70,11 +70,11 @@ func printResults(w io.Writer, iter *bigquery.RowIterator) error {
 		for _, t := range ts {
 			record := t.([]bigquery.Value)
 			title := record[0].(string)
-			cnt := record[1].(int)
+			cnt := record[1].(int64)
 			fmt.Fprintf(w, "\t%s: %d\n", title, cnt)
 		}
 
-		words := row[1].(int)
+		words := row[1].(int64)
 		fmt.Fprintf(w, "total unique words: %d\n", words)
 	}
 }
